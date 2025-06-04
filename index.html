@@ -74,10 +74,7 @@
       text-align: center;
       margin-top: 2em;
     }
-    .descargar {
-      margin-top: 2em;
-    }
-    a.descarga {
+    .descarga {
       display: inline-block;
       padding: 10px 15px;
       background: #43a047;
@@ -85,7 +82,7 @@
       border-radius: 6px;
       text-decoration: none;
     }
-    a.descarga:hover {
+    .descarga:hover {
       background: #2e7d32;
     }
   </style>
@@ -103,6 +100,10 @@
   
   <label for="codigo">Código UNSPSC</label>
   <input type="text" id="codigo" placeholder="Ej. 80141600" />
+
+  <label for="estado">Filtrar por estado del contrato (opcional)</label>
+  <input type="text" id="estado" placeholder="Ej. Activo, Adjudicado, Borrador..." />
+
   <button onclick="buscarContratos()">Buscar</button>
 
   <div class="resultados" id="resultados"></div>
@@ -111,17 +112,12 @@
     <p>¿Quieres más información sobre un proceso? <br/>Contacta directamente a <strong>Andrés</strong>:</p>
     <a href="https://wa.me/573057063238" target="_blank" class="descarga">Escribir a Andrés por WhatsApp</a>
   </div>
-
-  <div class="descargar">
-    <h3>Procesos y requisitos</h3>
-    <p>Puedes consultar o descargar nuestro archivo guía con los tipos de procesos y sus requisitos.</p>
-    <a class="descarga" href="Procesos_y_Requisitos_Ecolicitaciones.xlsx" download>Descargar archivo Excel</a>
-  </div>
 </main>
 
 <script>
   async function buscarContratos() {
     const codigo = document.getElementById("codigo").value.trim();
+    const estadoFiltro = document.getElementById("estado").value.trim().toLowerCase();
     const resultadosDiv = document.getElementById("resultados");
     resultadosDiv.innerHTML = "Buscando...";
 
@@ -130,19 +126,23 @@
       return;
     }
 
-    const url = `https://cors-anywhere.herokuapp.com/https://www.datos.gov.co/resource/jbjy-vk9h.json?$where=codigo_de_categoria_principal like '%25${codigo}'`;
-
     try {
+      const consultaCodigo = `V1.${codigo}`;
+      const url = `https://cors-anywhere.herokuapp.com/https://www.datos.gov.co/resource/jbjy-vk9h.json?$q=${consultaCodigo}`;
       const response = await fetch(url);
       const data = await response.json();
 
-      if (!data || data.length === 0) {
-        resultadosDiv.innerHTML = `<p>No se encontraron resultados para el código <strong>${codigo}</strong>.</p>`;
+      const filtrados = estadoFiltro
+        ? data.filter(item => (item.estado_contrato || '').toLowerCase().includes(estadoFiltro))
+        : data;
+
+      if (filtrados.length === 0) {
+        resultadosDiv.innerHTML = `<p>No se encontraron resultados para el código <strong>${codigo}</strong> ${estadoFiltro ? "y estado " + estadoFiltro : ""}.</p>`;
         return;
       }
 
       resultadosDiv.innerHTML = `<h3>Resultados para código: ${codigo}</h3>`;
-      data.forEach(proceso => {
+      filtrados.forEach(proceso => {
         resultadosDiv.innerHTML += `
           <div class="contrato">
             <p><strong>Entidad:</strong> ${proceso.nombre_entidad || 'No disponible'}</p>
