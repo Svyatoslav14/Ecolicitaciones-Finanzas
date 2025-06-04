@@ -140,9 +140,16 @@
       const response = await fetch(url);
       const data = await response.json();
 
-      const filtrados = estadoFiltro
-        ? data.filter(item => item.estado_contrato && item.estado_contrato.toLowerCase() === estadoFiltro.toLowerCase())
-        : data;
+      const hoy = new Date();
+
+      const filtrados = data.filter(proceso => {
+        const cumpleEstado = !estadoFiltro || (proceso.estado_contrato && proceso.estado_contrato.toLowerCase() === estadoFiltro.toLowerCase());
+
+        const fechaCierre = proceso.fecha_cierre ? new Date(proceso.fecha_cierre) : null;
+        const estaVigente = fechaCierre ? fechaCierre >= hoy : true;
+
+        return cumpleEstado && estaVigente;
+      });
 
       if (filtrados.length === 0) {
         resultadosDiv.innerHTML = `<p>No se encontraron resultados para el código <strong>${codigo}</strong>${estadoFiltro ? " y estado <strong>" + estadoFiltro + "</strong>" : ""}.</p>`;
@@ -151,6 +158,7 @@
 
       resultadosDiv.innerHTML = `<h3>Resultados para código: ${codigo}</h3>`;
       filtrados.forEach(proceso => {
+        const fechaCierre = proceso.fecha_cierre ? new Date(proceso.fecha_cierre).toLocaleDateString() : 'No disponible';
         resultadosDiv.innerHTML += `
           <div class="contrato">
             <p><strong>Entidad:</strong> ${proceso.nombre_entidad || 'No disponible'}</p>
@@ -158,6 +166,7 @@
             <p><strong>Modalidad:</strong> ${proceso.modalidad_de_contratacion || 'No disponible'}</p>
             <p><strong>Valor:</strong> ${proceso.valor_del_contrato || 'No disponible'}</p>
             <p><strong>Estado:</strong> ${proceso.estado_contrato || 'No disponible'}</p>
+            <p><strong>Fecha de cierre:</strong> ${fechaCierre}</p>
             ${proceso.urlproceso && proceso.urlproceso.url 
               ? `<a href="${proceso.urlproceso.url}" target="_blank">Ver proceso en SECOP</a>` 
               : ''}
