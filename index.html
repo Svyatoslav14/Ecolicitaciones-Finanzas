@@ -42,7 +42,7 @@
       margin-top: 1em;
       font-weight: bold;
     }
-    input[type="text"] {
+    input, select {
       width: 100%;
       padding: 10px;
       margin-top: 0.3em;
@@ -101,8 +101,16 @@
   <label for="codigo">Código UNSPSC</label>
   <input type="text" id="codigo" placeholder="Ej. 80141600" />
 
-  <label for="estado">Filtrar por estado del contrato (opcional)</label>
-  <input type="text" id="estado" placeholder="Ej. Activo, Adjudicado, Borrador..." />
+  <label for="estado">Filtrar por estado del contrato</label>
+  <select id="estado">
+    <option value="">-- Todos los estados --</option>
+    <option value="Activo">Activo</option>
+    <option value="Adjudicado">Adjudicado</option>
+    <option value="Borrador">Borrador</option>
+    <option value="Cancelado">Cancelado</option>
+    <option value="Terminado">Terminado</option>
+    <option value="Liquidado">Liquidado</option>
+  </select>
 
   <button onclick="buscarContratos()">Buscar</button>
 
@@ -117,7 +125,7 @@
 <script>
   async function buscarContratos() {
     const codigo = document.getElementById("codigo").value.trim();
-    const estadoFiltro = document.getElementById("estado").value.trim().toLowerCase();
+    const estadoFiltro = document.getElementById("estado").value.trim();
     const resultadosDiv = document.getElementById("resultados");
     resultadosDiv.innerHTML = "Buscando...";
 
@@ -133,11 +141,11 @@
       const data = await response.json();
 
       const filtrados = estadoFiltro
-        ? data.filter(item => (item.estado_contrato || '').toLowerCase().includes(estadoFiltro))
+        ? data.filter(item => item.estado_contrato && item.estado_contrato.toLowerCase() === estadoFiltro.toLowerCase())
         : data;
 
       if (filtrados.length === 0) {
-        resultadosDiv.innerHTML = `<p>No se encontraron resultados para el código <strong>${codigo}</strong> ${estadoFiltro ? "y estado " + estadoFiltro : ""}.</p>`;
+        resultadosDiv.innerHTML = `<p>No se encontraron resultados para el código <strong>${codigo}</strong>${estadoFiltro ? " y estado <strong>" + estadoFiltro + "</strong>" : ""}.</p>`;
         return;
       }
 
