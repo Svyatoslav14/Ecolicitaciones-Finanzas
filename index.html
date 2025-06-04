@@ -131,12 +131,7 @@
     }
 
     try {
-      const response = await fetch(`https://cors-anywhere.herokuapp.com/https://www.datos.gov.co/resource/jbjy-vk9h.json?$q=${codigo}`, {
-        headers: {
-          'Origin': 'https://github.io'
-        }
-      });
-
+      const response = await fetch(`https://cors-anywhere.herokuapp.com/https://www.datos.gov.co/resource/jbjy-vk9h.json?$q=${codigo}`);
       const data = await response.json();
 
       if (!data || data.length === 0) {
@@ -149,18 +144,22 @@
         resultadosDiv.innerHTML += `
           <div class="contrato">
             <p><strong>Entidad:</strong> ${proceso.nombre_entidad || 'No disponible'}</p>
-            <p><strong>Objeto del contrato:</strong> ${proceso.objeto_a_contratar || 'No disponible'}</p>
+            <p><strong>Objeto del contrato:</strong> ${proceso.objeto_del_contrato || 'No disponible'}</p>
             <p><strong>Modalidad:</strong> ${proceso.modalidad_de_contratacion || 'No disponible'}</p>
-            <p><strong>Valor:</strong> ${proceso.valor_estimado || 'No disponible'}</p>
-            <p><strong>Estado:</strong> ${proceso.estado_del_proceso || 'No disponible'}</p>
-            ${proceso.urlproceso ? `<a href="${proceso.urlproceso.url}" target="_blank">Ver proceso en SECOP</a>` : ''}
+            <p><strong>Valor:</strong> ${proceso.valor_del_contrato || 'No disponible'}</p>
+            <p><strong>Estado:</strong> ${proceso.estado_contrato || 'No disponible'}</p>
+            ${proceso.urlproceso && proceso.urlproceso.url 
+              ? `<a href="${proceso.urlproceso.url}" target="_blank">Ver proceso en SECOP</a>` 
+              : ''}
           </div>
         `;
       });
 
     } catch (error) {
       console.error(error);
-      resultadosDiv.innerHTML = "❌ Ocurrió un error al consultar la información. Asegúrate de haber habilitado el proxy en <a href='https://cors-anywhere.herokuapp.com/corsdemo' target='_blank'>cors-anywhere.herokuapp.com/corsdemo</a>.";
+      resultadosDiv.innerHTML = `❌ Ocurrió un error al consultar la información. <br> 
+        Asegúrate de haber habilitado el proxy desde 
+        <a href='https://cors-anywhere.herokuapp.com/corsdemo' target='_blank'>cors-anywhere.herokuapp.com/corsdemo</a>.`;
     }
   }
 </script>
