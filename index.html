@@ -9,8 +9,7 @@
     body {
       font-family: 'Inter', sans-serif;
       margin: 0;
-      padding: 0;
-      background-color: #f4f6f8;
+      background: #f3f6f9;
       color: #333;
     }
     header {
@@ -21,65 +20,78 @@
     }
     header h1 {
       margin: 0;
-      font-size: 2em;
+      font-size: 2rem;
     }
     main {
       max-width: 800px;
-      margin: 20px auto;
-      padding: 20px;
-      background-color: white;
-      border-radius: 8px;
-    }
-    section {
-      margin-bottom: 20px;
+      margin: 30px auto;
+      padding: 30px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
     }
     label {
       display: block;
-      margin-bottom: 8px;
+      margin: 10px 0 5px;
       font-weight: 600;
     }
     input[type="text"], input[type="tel"], select {
       width: 100%;
-      padding: 8px;
-      margin-bottom: 12px;
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 6px;
       border: 1px solid #ccc;
-      border-radius: 4px;
+      font-size: 16px;
     }
     button {
       background-color: #004080;
       color: white;
-      padding: 10px 16px;
+      padding: 10px 20px;
       border: none;
-      border-radius: 4px;
+      border-radius: 6px;
+      font-size: 16px;
       cursor: pointer;
-      font-weight: 600;
+      margin-top: 10px;
     }
     button:hover {
-      background-color: #003366;
+      background-color: #003060;
+    }
+    .checkbox {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .checkbox input {
+      margin-right: 10px;
     }
     .results {
-      margin-top: 20px;
+      margin-top: 30px;
     }
     .contract {
-      border-bottom: 1px solid #ccc;
-      padding: 10px 0;
-    }
-    .contract:last-child {
-      border-bottom: none;
+      border: 1px solid #ddd;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      background: #fafafa;
     }
     .contract h3 {
-      margin: 0 0 5px 0;
-      font-size: 1.1em;
+      margin: 0 0 10px;
+      font-size: 1.1rem;
+      color: #004080;
     }
     .contract p {
-      margin: 2px 0;
-      font-size: 0.9em;
+      margin: 5px 0;
+      font-size: 0.95rem;
+    }
+    .export {
+      text-align: right;
+      margin-top: 10px;
     }
     footer {
       text-align: center;
+      font-size: 0.85rem;
       padding: 20px;
-      font-size: 0.9em;
-      color: #666;
+      color: #777;
     }
   </style>
 </head>
@@ -88,84 +100,85 @@
     <h1>Ecolicitaciones & Finanzas</h1>
     <p>Asesoría empresarial en licitaciones públicas</p>
   </header>
+
   <main>
-    <section>
-      <h2>Formulario de Registro</h2>
-      <form id="registrationForm">
-        <label for="companyName">Nombre de la Empresa:</label>
-        <input type="text" id="companyName" name="companyName" required />
+    <form id="licitacionForm">
+      <label for="empresa">Nombre de la Empresa</label>
+      <input type="text" id="empresa" required />
 
-        <label for="phone">Número de Teléfono:</label>
-        <input type="tel" id="phone" name="phone" required />
+      <label for="telefono">Número de Teléfono</label>
+      <input type="tel" id="telefono" required />
 
-        <label for="unspsc">Código UNSPSC:</label>
-        <input type="text" id="unspsc" name="unspsc" required />
+      <label for="unspsc">Código UNSPSC</label>
+      <select id="unspsc" required>
+        <option value="">Seleccione un código...</option>
+        <option value="43211503">43211503 - 💻 Portátiles</option>
+        <option value="42172001">42172001 - 🌡️ Termómetros médicos</option>
+        <option value="80141600">80141600 - ⚖️ Servicios legales</option>
+        <option value="72100000">72100000 - 🏗️ Servicios de construcción</option>
+        <option value="86132001">86132001 - 🧑‍🏫 Capacitación técnica</option>
+      </select>
 
-        <label>
-          <input type="checkbox" id="dataConsent" required />
-          Acepto el tratamiento de mis datos personales.
-        </label>
+      <div class="checkbox">
+        <input type="checkbox" id="consent" required />
+        <label for="consent">Acepto el tratamiento de mis datos personales</label>
+      </div>
 
-        <button type="submit">Buscar Licitaciones</button>
-      </form>
-    </section>
+      <button type="submit">Buscar Licitaciones</button>
+    </form>
 
-    <section class="results" id="resultsSection" style="display: none;">
-      <h2>Resultados de Licitaciones</h2>
+    <div class="results" id="resultsSection" style="display:none;">
+      <h2>📋 Resultados de Licitaciones</h2>
       <div id="results"></div>
-    </section>
+      <div class="export">
+        <button onclick="window.print()">📤 Exportar a PDF</button>
+      </div>
+    </div>
   </main>
+
   <footer>
     &copy; 2025 Ecolicitaciones & Finanzas. Todos los derechos reservados.
   </footer>
 
   <script>
-    document.getElementById('registrationForm').addEventListener('submit', async function(e) {
+    document.getElementById('licitacionForm').addEventListener('submit', async function (e) {
       e.preventDefault();
-      const companyName = document.getElementById('companyName').value.trim();
-      const phone = document.getElementById('phone').value.trim();
+
       const unspsc = document.getElementById('unspsc').value.trim();
-      const dataConsent = document.getElementById('dataConsent').checked;
-
-      if (!companyName || !phone || !unspsc || !dataConsent) {
-        alert('Por favor, complete todos los campos y acepte el tratamiento de datos.');
-        return;
-      }
-
       const resultsSection = document.getElementById('resultsSection');
       const resultsDiv = document.getElementById('results');
-      resultsDiv.innerHTML = '<p>Cargando resultados...</p>';
+
+      resultsDiv.innerHTML = '<p>🔄 Cargando resultados...</p>';
       resultsSection.style.display = 'block';
 
       try {
-        const response = await fetch(`https://www.datos.gov.co/resource/jbjy-vk9h.json?codigo_de_categoria_principal=${unspsc}`);
-        const data = await response.json();
+        const res = await fetch(`https://www.datos.gov.co/resource/jbjy-vk9h.json?$q=${unspsc}`);
+        const data = await res.json();
 
-        if (data.length === 0) {
-          resultsDiv.innerHTML = '<p>No se encontraron licitaciones para el código UNSPSC proporcionado.</p>';
+        if (!data || data.length === 0) {
+          resultsDiv.innerHTML = '<p>⚠️ No se encontraron licitaciones para el código proporcionado.</p>';
           return;
         }
 
         resultsDiv.innerHTML = '';
-        data.forEach(contract => {
-          const contractDiv = document.createElement('div');
-          contractDiv.className = 'contract';
-          contractDiv.innerHTML = `
-            <h3>${contract.descripcion_del_proceso || 'Sin título'}</h3>
-            <p><strong>Entidad:</strong> ${contract.nombre_entidad || 'No disponible'}</p>
-            <p><strong>Valor del Contrato:</strong> ${contract.valor_del_contrato || 'No disponible'}</p>
-            <p><strong>Fecha de Inicio:</strong> ${contract.fecha_de_inicio_del_contrato || 'No disponible'}</p>
-            <p><strong>Fecha de Fin:</strong> ${contract.fecha_de_fin_del_contrato || 'No disponible'}</p>
-            <p><a href="${contract.urlproceso}" target="_blank">Ver más detalles</a></p>
+        data.forEach(item => {
+          const div = document.createElement('div');
+          div.className = 'contract';
+          div.innerHTML = `
+            <h3>📝 ${item.descripcion_del_proceso || 'Proceso sin descripción'}</h3>
+            <p><strong>🏛️ Entidad:</strong> ${item.nombre_entidad || 'No disponible'}</p>
+            <p><strong>📍 Departamento:</strong> ${item.departamento || 'No disponible'}</p>
+            <p><strong>💰 Valor del Contrato:</strong> ${item.valor_del_contrato || 'No definido'}</p>
+            <p><strong>📊 Estado:</strong> ${item.estado_contrato || 'Sin especificar'}</p>
+            ${item.urlproceso && item.urlproceso.url ? `<p><a href="${item.urlproceso.url}" target="_blank">🔗 Ver proceso en SECOP II</a></p>` : ''}
           `;
-          resultsDiv.appendChild(contractDiv);
+          resultsDiv.appendChild(div);
         });
-      } catch (error) {
-        resultsDiv.innerHTML = '<p>Ocurrió un error al consultar las licitaciones. Por favor, inténtelo más tarde.</p>';
-        console.error('Error fetching data:', error);
+      } catch (err) {
+        resultsDiv.innerHTML = '<p>❌ Error al consultar los datos. Intenta de nuevo más tarde.</p>';
+        console.error(err);
       }
     });
   </script>
 </body>
 </html>
-
