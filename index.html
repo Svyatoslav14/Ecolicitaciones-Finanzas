@@ -6,7 +6,11 @@
   <title>Ecolicitaciones & Finanzas</title>
   <link rel="icon" href="logo.png" />
   <style>
-    body { font-family: Arial, sans-serif; margin: 0; background: #f5f5f5; }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f5f5f5;
+    }
     header {
       background-color: #00695c;
       color: white;
@@ -15,39 +19,76 @@
       justify-content: space-between;
       padding: 1em 2em;
     }
-    header img { height: 50px; cursor: pointer; }
-    .whatsapp-contact { display: flex; align-items: center; gap: 10px; }
+    header img {
+      height: 50px;
+      cursor: pointer;
+    }
+    .whatsapp-contact {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
     .whatsapp-contact a {
-      background: #25D366; padding: 8px 12px; color: white;
-      border-radius: 5px; text-decoration: none; font-weight: bold;
+      background: #25D366;
+      padding: 8px 12px;
+      color: white;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: bold;
     }
     .container {
-      max-width: 800px; margin: 2em auto;
-      background: white; padding: 2em;
-      border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+      max-width: 800px;
+      margin: 2em auto;
+      background: white;
+      padding: 2em;
+      border-radius: 12px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
     }
-    h2 { color: #00796b; }
-    label { font-weight: bold; display: block; margin-top: 1em; }
+    h2 {
+      color: #00796b;
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 1em;
+    }
     input, select {
-      width: 100%; padding: 10px; margin-top: 5px;
-      border-radius: 8px; border: 1px solid #ccc;
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
     }
     .navigation {
-      margin-top: 1em; text-align: right;
+      margin-top: 1em;
+      text-align: right;
     }
     .navigation button {
-      background: #00695c; color: white;
-      padding: 10px 16px; border: none;
-      border-radius: 6px; cursor: pointer;
+      background: #00695c;
+      color: white;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
     }
-    .navigation button:hover { background: #004d40; }
-    .resultados { margin-top: 2em; }
+    .navigation button:hover {
+      background: #004d40;
+    }
+    .resultados {
+      margin-top: 2em;
+    }
     .contrato {
       border-bottom: 1px solid #ccc;
       padding: 1em 0;
     }
-    .hidden { display: none; }
-    #qr { height: 40px; border: 1px solid white; border-radius: 5px; }
+    .hidden {
+      display: none;
+    }
+    #qr {
+      height: 40px;
+      border: 1px solid white;
+      border-radius: 5px;
+    }
   </style>
 </head>
 <body>
@@ -55,17 +96,62 @@
 <header>
   <img src="logo.png" alt="Logo" onclick="volverInicio()" />
   <div class="whatsapp-contact">
-    <a href="https://wa.me/573057063238" target="_blank">WhatsApp asesoría Ecolicitaciones & Finanzas</a>
+    <a href="https://wa.me/573057063238" target="_blank">WhatsApp Andrés</a>
     <img src="QR.png" id="qr" alt="QR WhatsApp">
   </div>
 </header>
 
 <div class="container">
-  <!-- Paso 4 (único que mostramos aquí) -->
-  <div id="paso4">
+  <!-- Paso 1 -->
+  <div id="paso1">
+    <h2>Registro</h2>
+    <label>Nombre</label>
+    <input type="text" id="nombre" required />
+    <label>Correo</label>
+    <input type="email" id="correo" required />
+    <label>Teléfono</label>
+    <input type="tel" id="telefono" pattern="[0-9]{7,11}" required maxlength="11" />
+    <label>Empresa</label>
+    <input type="text" id="empresa" required />
+    <label>
+      <input type="checkbox" id="terminos" required /> Acepto el tratamiento de datos personales
+    </label>
+    <div class="navigation">
+      <button onclick="validarPaso1()">Siguiente ➡️</button>
+    </div>
+  </div>
+
+  <!-- Paso 2 -->
+  <div id="paso2" class="hidden">
+    <h2>Selecciona el tipo de asesoría</h2>
+    <select id="tipoProceso" onchange="mostrarContrataciones()">
+      <option value="">Selecciona</option>
+      <option value="licitaciones">Licitaciones</option>
+      <option value="contable">Contabilidad</option>
+      <option value="ambiental">Consultoría Ambiental</option>
+    </select>
+    <div class="navigation">
+      <button onclick="cambiarPaso(1)">⬅️ Atrás</button>
+      <button onclick="validarPaso2()">Siguiente ➡️</button>
+    </div>
+  </div>
+
+  <!-- Paso 3 -->
+  <div id="paso3" class="hidden">
+    <h2>Tipo de contratación</h2>
+    <select id="subProceso" onchange="mostrarRequisitos()"></select>
+    <ul id="requisitos"></ul>
+    <div class="navigation">
+      <button onclick="cambiarPaso(2)">⬅️ Atrás</button>
+      <button onclick="cambiarPaso(4)">Siguiente ➡️</button>
+    </div>
+  </div>
+
+  <!-- Paso 4 -->
+  <div id="paso4" class="hidden">
     <h2>Consulta oportunidades en SECOP</h2>
     <label>Código UNSPSC</label>
-    <input type="text" id="codigo" placeholder="Ej. 80111500"/>
+    <input type="text" id="codigo" />
     <label>Estado del contrato</label>
     <select id="estado">
       <option value="">Todos</option>
@@ -74,6 +160,7 @@
       <option value="Terminado">Terminado</option>
     </select>
     <div class="navigation">
+      <button onclick="cambiarPaso(3)">⬅️ Atrás</button>
       <button onclick="buscarContratos()">Buscar</button>
     </div>
     <div class="resultados" id="resultados"></div>
@@ -85,49 +172,114 @@
     location.reload();
   }
 
+  function cambiarPaso(paso) {
+    for (let i = 1; i <= 4; i++) {
+      document.getElementById('paso' + i).classList.add('hidden');
+    }
+    document.getElementById('paso' + paso).classList.remove('hidden');
+  }
+
+  function validarPaso1() {
+    const email = document.getElementById('correo');
+    const tel = document.getElementById('telefono');
+    const term = document.getElementById('terminos');
+    if (!email.checkValidity() || !tel.checkValidity() || !term.checked) {
+      alert("Por favor completa los campos correctamente.");
+      return;
+    }
+    cambiarPaso(2);
+  }
+
+  function validarPaso2() {
+    const tipo = document.getElementById('tipoProceso').value;
+    if (!tipo) {
+      alert("Selecciona un tipo de proceso.");
+      return;
+    }
+    cambiarPaso(3);
+  }
+
+  function mostrarContrataciones() {
+    const tipo = document.getElementById('tipoProceso').value;
+    const select = document.getElementById('subProceso');
+    const opciones = {
+      licitaciones: ["Subasta Inversa", "Concurso de Méritos", "Contratación Directa", "Selección Abreviada", "Acuerdo Marco de Precios"],
+      contable: ["Auditoría Financiera", "NIIF PYMES", "Planeación Tributaria"],
+      ambiental: ["Estudios de Impacto", "Planes de Manejo", "Economía Circular", "Evaluación Ambiental Estratégica", "Huella de Carbono"]
+    };
+    select.innerHTML = "<option value=''>Seleccione</option>";
+    (opciones[tipo] || []).forEach(p => {
+      const option = document.createElement("option");
+      option.value = p;
+      option.textContent = p;
+      select.appendChild(option);
+    });
+  }
+
+  function mostrarRequisitos() {
+    const tipo = document.getElementById("subProceso").value;
+    const lista = document.getElementById("requisitos");
+    const data = {
+      "Subasta Inversa": ["Certificado Cámara de Comercio", "RUP actualizado", "Estados financieros auditados (2 años)"],
+      "Concurso de Méritos": ["Certificación experiencia", "HV del equipo", "Propuesta técnica"],
+      "Contratación Directa": ["Certificado existencia", "RUT", "Propuesta firmada"],
+      "Selección Abreviada": ["Estudio de mercado", "RUP", "Soportes"],
+      "Acuerdo Marco de Precios": ["Registro Colombia Compra", "Análisis de precios"],
+      "Auditoría Financiera": ["Estados auditados", "Acta constitutiva"],
+      "NIIF PYMES": ["Estados financieros NIIF", "Políticas contables"],
+      "Planeación Tributaria": ["Declaraciones de renta", "Análisis de riesgo"],
+      "Estudios de Impacto": ["Diagnóstico ambiental", "Plan de manejo"],
+      "Planes de Manejo": ["Zonificación", "Estrategias ecológicas"],
+      "Economía Circular": ["ACV", "Materiales reciclables"],
+      "Evaluación Ambiental Estratégica": ["Análisis políticas", "Participación"],
+      "Huella de Carbono": ["Inventario GEI", "Plan de reducción"]
+    };
+    lista.innerHTML = "";
+    (data[tipo] || []).forEach(req => {
+      const li = document.createElement("li");
+      li.textContent = req;
+      lista.appendChild(li);
+    });
+  }
+
   async function buscarContratos() {
-    const codigoInput = document.getElementById("codigo").value.trim();
+    const codigo = document.getElementById("codigo").value.trim();
     const estado = document.getElementById("estado").value;
     const resultadosDiv = document.getElementById("resultados");
+    resultadosDiv.innerHTML = "Buscando...";
 
-    if (!codigoInput) {
+    if (!codigo) {
       resultadosDiv.innerHTML = "Por favor ingresa un código UNSPSC.";
       return;
     }
 
-    resultadosDiv.innerHTML = "Buscando...";
-    const codigoCompleto = "V1." + codigoInput;
-
     try {
-      const url = `https://www.datos.gov.co/resource/jbjy-vk9h.json?$where=codigo_de_categoria_principal='${codigoCompleto}'&$order=fecha_de_publicacion DESC&$limit=100`;
-
+      const url = https://cors-anywhere.herokuapp.com/https://www.datos.gov.co/resource/jbjy-vk9h.json?$where=contains(codigo_de_categoria_principal,'${codigo}')&$order=fecha_de_publicacion DESC&$limit=10;
       const res = await fetch(url);
       const data = await res.json();
-
-      const filtrados = estado
-        ? data.filter(d => d.estado_contrato?.toLowerCase() === estado.toLowerCase())
-        : data;
+      const filtrados = estado ? data.filter(d => d.estado_contrato === estado) : data;
 
       if (filtrados.length === 0) {
         resultadosDiv.innerHTML = "No se encontraron resultados.";
         return;
       }
 
-      resultadosDiv.innerHTML = `<h3>Resultados recientes para: ${codigoCompleto}</h3>`;
+      resultadosDiv.innerHTML = <h3>Resultados recientes para código: ${codigo}</h3>;
       filtrados.forEach(c => {
-        resultadosDiv.innerHTML += `
+        resultadosDiv.innerHTML += 
           <div class="contrato">
             <p><strong>Entidad:</strong> ${c.nombre_entidad || 'No disponible'}</p>
-            <p><strong>Objeto:</strong> ${c.objeto_del_contrato || 'No disponible'}</p>
+            <p><strong>Objeto del contrato:</strong> ${c.objeto_del_contrato || 'No disponible'}</p>
             <p><strong>Modalidad:</strong> ${c.modalidad_de_contratacion || 'No disponible'}</p>
             <p><strong>Valor:</strong> ${c.valor_del_contrato || 'No disponible'}</p>
             <p><strong>Estado:</strong> ${c.estado_contrato || 'No disponible'}</p>
-            ${c.urlproceso?.url ? `<a href="${c.urlproceso.url}" target="_blank">Ver proceso</a>` : ''}
-          </div>`;
+            ${c.urlproceso && c.urlproceso.url ? <a href="${c.urlproceso.url}" target="_blank">Ver proceso en SECOP</a> : ''}
+          </div>
+        ;
       });
 
     } catch (e) {
-      resultadosDiv.innerHTML = "Error al consultar los datos. Verifica tu conexión o intenta más tarde.";
+      resultadosDiv.innerHTML = "Error al consultar la información.";
       console.error(e);
     }
   }
