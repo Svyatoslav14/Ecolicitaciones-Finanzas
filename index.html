@@ -4,61 +4,52 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Ecolicitaciones & Finanzas</title>
-  <link rel="icon" href="logo.png" />
+  <link rel="icon" type="image/png" href="logo.png" />
   <style>
     body {
       font-family: Arial, sans-serif;
       margin: 0;
-      background: #f5f5f5;
+      background: #f9f9f9;
+      color: #333;
     }
     header {
       background-color: #00695c;
       color: white;
       display: flex;
-      align-items: center;
       justify-content: space-between;
+      align-items: center;
       padding: 1em 2em;
     }
-    header img {
+    header img.logo {
       height: 50px;
       cursor: pointer;
     }
-    h1 {
-      margin: 0;
-      font-size: 1.5em;
-      flex-grow: 1;
-      text-align: center;
-    }
-    .whatsapp-contact {
+    .whatsapp-button {
+      background-color: #43a047;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 10px 15px;
       display: flex;
       align-items: center;
-      gap: 10px;
-    }
-    .whatsapp-contact a {
-      background: #25D366;
-      padding: 8px 12px;
-      color: white;
-      border-radius: 5px;
       text-decoration: none;
       font-weight: bold;
-      font-size: 0.9em;
+      position: relative;
     }
-    #qr {
+    .whatsapp-button img {
       height: 40px;
+      margin-left: 10px;
       cursor: pointer;
     }
-    #qrModal {
+    .qr-popup {
+      position: absolute;
+      top: 50px;
+      right: 0;
       display: none;
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background-color: rgba(0,0,0,0.5);
-      justify-content: center;
-      align-items: center;
-    }
-    #qrModal img {
-      max-height: 80vh;
-      border: 5px solid white;
+      background: white;
+      padding: 10px;
       border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     }
     .container {
       max-width: 800px;
@@ -66,143 +57,210 @@
       background: white;
       padding: 2em;
       border-radius: 12px;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     }
     h2 {
-      color: #00796b;
       text-align: center;
+      color: #00695c;
     }
     label {
-      font-weight: bold;
       display: block;
       margin-top: 1em;
+      font-weight: bold;
     }
     input, select {
       width: 100%;
       padding: 10px;
-      margin-top: 5px;
-      border-radius: 8px;
+      margin-top: 0.3em;
       border: 1px solid #ccc;
+      border-radius: 8px;
     }
-    .navigation {
+    button {
       margin-top: 1.5em;
-      text-align: right;
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-    }
-    .navigation button {
-      background: #00695c;
+      background-color: #00695c;
       color: white;
-      padding: 10px 16px;
+      padding: 10px 20px;
       border: none;
       border-radius: 6px;
       cursor: pointer;
     }
-    .navigation button:hover {
-      background: #004d40;
+    .actions {
+      display: flex;
+      justify-content: space-between;
     }
-    .resultados {
-      margin-top: 2em;
-    }
-    .contrato {
-      border-bottom: 1px solid #ccc;
-      padding: 1em 0;
-    }
-    .contrato:last-child {
-      border: none;
+    ul {
+      margin-top: 1em;
+      padding-left: 1.5em;
     }
     .hidden {
       display: none;
-    }
-    a {
-      color: #00796b;
     }
   </style>
 </head>
 <body>
 
 <header>
-  <img src="logo.png" alt="Logo" onclick="location.href='index.html'" />
-  <h1>Ecolicitaciones & Finanzas</h1>
-  <div class="whatsapp-contact">
-    <a href="https://wa.me/573057063238" target="_blank">WhatsApp Asesoría Ecolicitaciones & Finanzas</a>
-    <img src="QR.png" id="qr" alt="QR WhatsApp" onclick="mostrarQR()" />
-  </div>
+  <img src="logo.png" class="logo" onclick="goHome()" />
+  <a class="whatsapp-button" href="https://wa.me/573057063238" target="_blank">
+    WhatsApp Asesoría Ecolicitaciones & Finanzas
+    <img src="QR.png" id="qr-icon" />
+    <div class="qr-popup" id="qr-popup">
+      <img src="QR.png" alt="QR WhatsApp" width="150" />
+    </div>
+  </a>
 </header>
 
-<div id="qrModal" onclick="this.style.display='none'">
-  <img src="QR.png" alt="QR Ampliado" />
-</div>
-
 <div class="container">
-  <h2>Consulta oportunidades en SECOP</h2>
-
-  <label for="codigo">Código UNSPSC</label>
-  <input type="text" id="codigo" placeholder="Ej: 80141600" />
-
-  <label for="estado">Estado del contrato</label>
-  <select id="estado">
-    <option value="">Todos</option>
-    <option value="Activo">Activo</option>
-    <option value="Liquidado">Liquidado</option>
-    <option value="Terminado">Terminado</option>
-  </select>
-
-  <div class="navigation">
-    <button onclick="history.back()">⬅️ Atrás</button>
-    <button onclick="buscarContratos()">Buscar</button>
+  <div id="step1">
+    <h2>Registro</h2>
+    <label>Nombre completo</label>
+    <input type="text" id="nombre" required />
+    <label>Correo electrónico</label>
+    <input type="email" id="correo" required />
+    <label>Teléfono</label>
+    <input type="tel" id="telefono" maxlength="11" required />
+    <label>Empresa</label>
+    <input type="text" id="empresa" required />
+    <label><input type="checkbox" id="autorizacion" /> Acepto tratamiento de datos</label>
+    <div class="actions">
+      <span></span>
+      <button onclick="validarYContinuar()">Siguiente ➡️</button>
+    </div>
   </div>
 
-  <div class="resultados" id="resultados"></div>
+  <div id="step2" class="hidden">
+    <h2>Selecciona el tipo de solicitud</h2>
+    <select id="tipoSolicitud" onchange="mostrarRequisitos()">
+      <option value="">Selecciona una opción</option>
+      <option value="licitacion">Licitación pública</option>
+      <option value="abreviada">Selección abreviada</option>
+      <option value="meritos">Concurso de méritos</option>
+      <option value="directa">Contratación directa</option>
+      <option value="minima">Mínima cuantía</option>
+    </select>
+    <div id="requisitos" class="hidden">
+      <h3>Documentos requeridos:</h3>
+      <ul id="listaRequisitos"></ul>
+    </div>
+    <div class="actions">
+      <button onclick="goToStep(1)">⬅️ Atrás</button>
+      <button onclick="goToStep(3)">Siguiente ➡️</button>
+    </div>
+  </div>
+
+  <div id="step3" class="hidden">
+    <h2>Consulta oportunidades en SECOP</h2>
+    <label>Código UNSPSC</label>
+    <input type="text" id="codigoUNSPSC" placeholder="Ej: 80141600" />
+    <label>Estado del contrato</label>
+    <select id="estadoContrato">
+      <option value="">Todos</option>
+      <option value="Activo">Activo</option>
+      <option value="Cerrado">Cerrado</option>
+      <option value="Convocado">Convocado</option>
+    </select>
+    <div class="actions">
+      <button onclick="goToStep(2)">⬅️ Atrás</button>
+      <button onclick="buscar()">Buscar</button>
+    </div>
+    <div id="resultados" style="margin-top:2em;"></div>
+  </div>
 </div>
 
 <script>
-  function mostrarQR() {
-    document.getElementById('qrModal').style.display = 'flex';
+  const pasos = ["step1", "step2", "step3"];
+
+  function goHome() {
+    pasos.forEach(p => document.getElementById(p).classList.add("hidden"));
+    document.getElementById("step1").classList.remove("hidden");
   }
 
-  async function buscarContratos() {
-    const codigo = document.getElementById("codigo").value.trim();
-    const estado = document.getElementById("estado").value;
-    const resultadosDiv = document.getElementById("resultados");
-    resultadosDiv.innerHTML = "Buscando...";
+  function goToStep(num) {
+    pasos.forEach(p => document.getElementById(p).classList.add("hidden"));
+    document.getElementById("step" + num).classList.remove("hidden");
+  }
 
-    if (!codigo) {
-      resultadosDiv.innerHTML = "Por favor ingresa un código UNSPSC.";
+  function validarYContinuar() {
+    const correo = document.getElementById("correo").value;
+    const telefono = document.getElementById("telefono").value;
+    const autorizado = document.getElementById("autorizacion").checked;
+
+    if (!correo.includes("@") || telefono.length > 11 || !autorizado) {
+      alert("Por favor completa correctamente todos los campos.");
       return;
     }
+    goToStep(2);
+  }
+
+  function mostrarRequisitos() {
+    const tipo = document.getElementById("tipoSolicitud").value;
+    const requisitos = {
+      licitacion: ["RUP actualizado", "Certificados de experiencia", "Estados financieros", "Propuesta técnica y económica"],
+      abreviada: ["Estudio de mercado", "3 cotizaciones", "Certificaciones legales", "Propuesta firmada"],
+      meritos: ["HV del equipo", "Plan de trabajo", "Experiencia comprobable", "Carta de intención"],
+      directa: ["RUT", "Propuesta firmada", "Soportes legales", "Declaración de cumplimiento"],
+      minima: ["Certificado Cámara de Comercio", "Propuesta técnica", "Precio unitario", "Documentos legales"]
+    };
+    const lista = document.getElementById("listaRequisitos");
+    lista.innerHTML = "";
+    if (requisitos[tipo]) {
+      requisitos[tipo].forEach(doc => {
+        const li = document.createElement("li");
+        li.textContent = doc;
+        lista.appendChild(li);
+      });
+      document.getElementById("requisitos").classList.remove("hidden");
+    } else {
+      document.getElementById("requisitos").classList.add("hidden");
+    }
+  }
+
+  async function buscar() {
+    const codigo = document.getElementById("codigoUNSPSC").value.trim();
+    const estado = document.getElementById("estadoContrato").value;
+    const resultados = document.getElementById("resultados");
+    resultados.innerHTML = "Buscando resultados...";
 
     try {
-      const url = `https://cors-anywhere.herokuapp.com/https://www.datos.gov.co/resource/jbjy-vk9h.json?$where=contains(codigo_de_categoria_principal,'${codigo}')&$order=fecha_de_publicacion DESC&$limit=10`;
+      const url = `https://cors-anywhere.herokuapp.com/https://www.datos.gov.co/resource/jbjy-vk9h.json?$q=${codigo}`;
       const res = await fetch(url);
       const data = await res.json();
-      const filtrados = estado ? data.filter(d => d.estado_contrato === estado) : data;
+
+      const filtrados = data.filter(d => {
+        const codigoCat = d.codigo_de_categoria_principal || "";
+        const estadoContrato = (d.estado_contrato || "").toLowerCase();
+        return codigoCat.includes(codigo) && (estado === "" || estadoContrato === estado.toLowerCase());
+      });
 
       if (filtrados.length === 0) {
-        resultadosDiv.innerHTML = "No se encontraron resultados.";
+        resultados.innerHTML = "No se encontraron oportunidades para ese código.";
         return;
       }
 
-      resultadosDiv.innerHTML = `<h3>Resultados recientes para código: ${codigo}</h3>`;
-      filtrados.forEach(c => {
-        resultadosDiv.innerHTML += `
-          <div class="contrato">
-            <p><strong>Entidad:</strong> ${c.nombre_entidad || 'No disponible'}</p>
-            <p><strong>Objeto del contrato:</strong> ${c.objeto_del_contrato || 'No disponible'}</p>
-            <p><strong>Modalidad:</strong> ${c.modalidad_de_contratacion || 'No disponible'}</p>
-            <p><strong>Valor:</strong> ${c.valor_del_contrato || 'No disponible'}</p>
-            <p><strong>Estado:</strong> ${c.estado_contrato || 'No disponible'}</p>
-            ${c.urlproceso && c.urlproceso.url ? `<a href="${c.urlproceso.url}" target="_blank">Ver proceso en SECOP</a>` : ''}
+      resultados.innerHTML = "";
+      filtrados.forEach(p => {
+        resultados.innerHTML += `
+          <div style="border-bottom:1px solid #ccc; padding:10px 0;">
+            <p><strong>Entidad:</strong> ${p.nombre_entidad || 'No disponible'}</p>
+            <p><strong>Objeto:</strong> ${p.objeto_del_contrato || 'No disponible'}</p>
+            <p><strong>Modalidad:</strong> ${p.modalidad_de_contratacion || 'No disponible'}</p>
+            <p><strong>Valor:</strong> ${p.valor_del_contrato || 'No disponible'}</p>
+            <p><strong>Estado:</strong> ${p.estado_contrato || 'No disponible'}</p>
+            ${p.urlproceso?.url ? `<a href="${p.urlproceso.url}" target="_blank">Ver proceso</a>` : ''}
           </div>
         `;
       });
 
     } catch (e) {
-      resultadosDiv.innerHTML = "Error al consultar la información.";
-      console.error(e);
+      resultados.innerHTML = "Error al consultar la información. Asegúrate de activar el proxy desde https://cors-anywhere.herokuapp.com/corsdemo";
     }
   }
+
+  // Mostrar QR al pasar el mouse
+  const qrIcon = document.getElementById("qr-icon");
+  const qrPopup = document.getElementById("qr-popup");
+  qrIcon.addEventListener("mouseover", () => qrPopup.style.display = "block");
+  qrIcon.addEventListener("mouseleave", () => qrPopup.style.display = "none");
 </script>
 
 </body>
