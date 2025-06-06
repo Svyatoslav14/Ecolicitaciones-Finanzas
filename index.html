@@ -15,10 +15,9 @@
       background-color: #00695c;
       color: white;
       display: flex;
-      align-items: center;
       justify-content: space-between;
+      align-items: center;
       padding: 1em 2em;
-      flex-wrap: wrap;
     }
     header img {
       height: 50px;
@@ -38,7 +37,7 @@
       font-weight: bold;
     }
     .container {
-      max-width: 800px;
+      max-width: 850px;
       margin: 2em auto;
       background: white;
       padding: 2em;
@@ -62,7 +61,7 @@
       border: 1px solid #ccc;
     }
     .navigation {
-      margin-top: 1.5em;
+      margin-top: 2em;
       text-align: right;
     }
     .navigation button {
@@ -88,16 +87,14 @@
     }
     #qr {
       height: 40px;
-      border: 1px solid white;
-      border-radius: 5px;
+      border-radius: 4px;
     }
   </style>
 </head>
 <body>
 
 <header>
-  <img src="logo.png" alt="Logo" onclick="location.reload()" />
-  <h2 style="flex:1; text-align:center; margin: 0;">Ecolicitaciones & Finanzas</h2>
+  <img src="logo.png" alt="Logo" onclick="volverInicio()" />
   <div class="whatsapp-contact">
     <a href="https://wa.me/573057063238" target="_blank">WhatsApp Asesoría Ecolicitaciones & Finanzas</a>
     <img src="QR.png" id="qr" alt="QR WhatsApp">
@@ -105,13 +102,12 @@
 </header>
 
 <div class="container">
-
-  <!-- Paso 1 -->
+  <!-- Paso 1: Registro -->
   <div id="paso1">
-    <h2>Registro</h2>
-    <label>Nombre</label>
+    <h2>Registro de Usuario</h2>
+    <label>Nombre completo</label>
     <input type="text" id="nombre" required />
-    <label>Correo</label>
+    <label>Correo electrónico</label>
     <input type="email" id="correo" required />
     <label>Teléfono</label>
     <input type="tel" id="telefono" pattern="[0-9]{7,11}" maxlength="11" required />
@@ -123,7 +119,7 @@
     </div>
   </div>
 
-  <!-- Paso 2 -->
+  <!-- Paso 2: Tipo de solicitud -->
   <div id="paso2" class="hidden">
     <h2>Selecciona el tipo de asesoría</h2>
     <select id="tipoProceso" onchange="mostrarContrataciones()">
@@ -138,7 +134,7 @@
     </div>
   </div>
 
-  <!-- Paso 3 -->
+  <!-- Paso 3: Subtipo -->
   <div id="paso3" class="hidden">
     <h2>Tipo de contratación</h2>
     <select id="subProceso" onchange="mostrarRequisitos()"></select>
@@ -149,12 +145,10 @@
     </div>
   </div>
 
-  <!-- Paso 4 -->
+  <!-- Paso 4: Consulta en SECOP -->
   <div id="paso4" class="hidden">
     <h2>Consulta oportunidades en SECOP</h2>
-    <p><strong>Antes de consultar, abre este enlace en otra pestaña y pulsa "Request temporary access":</strong><br>
-      <a href="https://cors-anywhere.herokuapp.com/corsdemo" target="_blank">https://cors-anywhere.herokuapp.com/corsdemo</a>
-    </p>
+    <p>⚠️ Antes de buscar, activa el acceso temporal a la API desde <a href="https://cors-anywhere.herokuapp.com/corsdemo" target="_blank">este enlace</a>.</p>
     <label>Código UNSPSC</label>
     <input type="text" id="codigo" placeholder="Ej: 80141600" />
     <label>Estado del contrato</label>
@@ -170,30 +164,33 @@
     </div>
     <div class="resultados" id="resultados"></div>
   </div>
-
 </div>
 
 <script>
+  function volverInicio() {
+    location.reload();
+  }
+
   function cambiarPaso(paso) {
     for (let i = 1; i <= 4; i++) {
-      document.getElementById('paso' + i).classList.add('hidden');
+      document.getElementById("paso" + i).classList.add("hidden");
     }
-    document.getElementById('paso' + paso).classList.remove('hidden');
+    document.getElementById("paso" + paso).classList.remove("hidden");
   }
 
   function validarPaso1() {
-    const email = document.getElementById('correo');
-    const tel = document.getElementById('telefono');
-    const term = document.getElementById('terminos');
-    if (!email.checkValidity() || !tel.checkValidity() || !term.checked) {
-      alert("Por favor completa los campos correctamente.");
+    const correo = document.getElementById("correo");
+    const telefono = document.getElementById("telefono");
+    const terminos = document.getElementById("terminos");
+    if (!correo.checkValidity() || !telefono.checkValidity() || !terminos.checked) {
+      alert("Por favor completa todos los campos correctamente.");
       return;
     }
     cambiarPaso(2);
   }
 
   function validarPaso2() {
-    const tipo = document.getElementById('tipoProceso').value;
+    const tipo = document.getElementById("tipoProceso").value;
     if (!tipo) {
       alert("Selecciona un tipo de proceso.");
       return;
@@ -202,19 +199,19 @@
   }
 
   function mostrarContrataciones() {
-    const tipo = document.getElementById('tipoProceso').value;
-    const select = document.getElementById('subProceso');
+    const tipo = document.getElementById("tipoProceso").value;
+    const select = document.getElementById("subProceso");
     const opciones = {
       licitaciones: ["Subasta Inversa", "Concurso de Méritos", "Contratación Directa", "Selección Abreviada", "Acuerdo Marco de Precios"],
       contable: ["Auditoría Financiera", "NIIF PYMES", "Planeación Tributaria"],
       ambiental: ["Estudios de Impacto", "Planes de Manejo", "Economía Circular", "Evaluación Ambiental Estratégica", "Huella de Carbono"]
     };
     select.innerHTML = "<option value=''>Seleccione</option>";
-    (opciones[tipo] || []).forEach(p => {
-      const option = document.createElement("option");
-      option.value = p;
-      option.textContent = p;
-      select.appendChild(option);
+    (opciones[tipo] || []).forEach(op => {
+      const opt = document.createElement("option");
+      opt.value = op;
+      opt.textContent = op;
+      select.appendChild(opt);
     });
   }
 
@@ -237,9 +234,9 @@
       "Huella de Carbono": ["Inventario GEI", "Plan de reducción"]
     };
     lista.innerHTML = "";
-    (data[tipo] || []).forEach(req => {
+    (data[tipo] || []).forEach(r => {
       const li = document.createElement("li");
-      li.textContent = req;
+      li.textContent = r;
       lista.appendChild(li);
     });
   }
@@ -256,10 +253,10 @@
     }
 
     try {
-      const prefijo = `V1.${codigo}`;
-      const url = `https://cors-anywhere.herokuapp.com/https://www.datos.gov.co/resource/jbjy-vk9h.json?codigo_de_categoria_principal=${encodeURIComponent(prefijo)}`;
+      const url = `https://cors-anywhere.herokuapp.com/https://www.datos.gov.co/resource/jbjy-vk9h.json?$where=contains(codigo_de_categoria_principal,'V1.${codigo}')`;
       const res = await fetch(url);
       const data = await res.json();
+
       const filtrados = estado ? data.filter(d => d.estado_contrato === estado) : data;
 
       if (filtrados.length === 0) {
@@ -267,16 +264,16 @@
         return;
       }
 
-      resultadosDiv.innerHTML = `<h3>Resultados recientes para código: ${codigo}</h3>`;
-      filtrados.forEach(c => {
+      resultadosDiv.innerHTML = `<h3>Resultados para código: ${codigo}</h3>`;
+      filtrados.forEach(item => {
         resultadosDiv.innerHTML += `
           <div class="contrato">
-            <p><strong>Entidad:</strong> ${c.nombre_entidad || 'No disponible'}</p>
-            <p><strong>Objeto del contrato:</strong> ${c.objeto_del_contrato || 'No disponible'}</p>
-            <p><strong>Modalidad:</strong> ${c.modalidad_de_contratacion || 'No disponible'}</p>
-            <p><strong>Valor:</strong> ${c.valor_del_contrato || 'No disponible'}</p>
-            <p><strong>Estado:</strong> ${c.estado_contrato || 'No disponible'}</p>
-            ${c.urlproceso && c.urlproceso.url ? `<a href="${c.urlproceso.url}" target="_blank">Ver proceso en SECOP</a>` : ''}
+            <p><strong>Entidad:</strong> ${item.nombre_entidad || 'No disponible'}</p>
+            <p><strong>Objeto del contrato:</strong> ${item.objeto_del_contrato || 'No disponible'}</p>
+            <p><strong>Modalidad:</strong> ${item.modalidad_de_contratacion || 'No disponible'}</p>
+            <p><strong>Valor:</strong> ${item.valor_del_contrato || 'No disponible'}</p>
+            <p><strong>Estado:</strong> ${item.estado_contrato || 'No disponible'}</p>
+            ${item.urlproceso?.url ? `<a href="${item.urlproceso.url}" target="_blank">Ver proceso en SECOP</a>` : ''}
           </div>
         `;
       });
@@ -286,6 +283,8 @@
       console.error(e);
     }
   }
+
+  window.onload = () => cambiarPaso(1);
 </script>
 </body>
 </html>
