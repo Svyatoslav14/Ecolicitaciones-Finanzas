@@ -11,23 +11,36 @@
       margin: 0;
       background: #f5f5f5;
     }
+
     header {
       background-color: #00695c;
       color: white;
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
       padding: 1em 2em;
     }
+
     header img {
       height: 50px;
       cursor: pointer;
     }
+
+    .titulo {
+      flex: 1 1 100%;
+      text-align: center;
+      font-size: 1.8em;
+      margin: 0.5em 0 0 0;
+    }
+
     .whatsapp-contact {
       display: flex;
       align-items: center;
       gap: 10px;
+      flex-wrap: nowrap;
     }
+
     .whatsapp-contact a {
       background: #25D366;
       padding: 8px 12px;
@@ -36,6 +49,13 @@
       text-decoration: none;
       font-weight: bold;
     }
+
+    #qr {
+      height: 40px;
+      border: 1px solid white;
+      border-radius: 5px;
+    }
+
     .container {
       max-width: 800px;
       margin: 2em auto;
@@ -44,14 +64,17 @@
       border-radius: 12px;
       box-shadow: 0 5px 20px rgba(0,0,0,0.1);
     }
+
     h2 {
       color: #00796b;
     }
+
     label {
       font-weight: bold;
       display: block;
       margin-top: 1em;
     }
+
     input, select {
       width: 100%;
       padding: 10px;
@@ -59,10 +82,12 @@
       border-radius: 8px;
       border: 1px solid #ccc;
     }
+
     .navigation {
       margin-top: 1em;
       text-align: right;
     }
+
     .navigation button {
       background: #00695c;
       color: white;
@@ -71,23 +96,22 @@
       border-radius: 6px;
       cursor: pointer;
     }
+
     .navigation button:hover {
       background: #004d40;
     }
+
     .resultados {
       margin-top: 2em;
     }
+
     .contrato {
       border-bottom: 1px solid #ccc;
       padding: 1em 0;
     }
+
     .hidden {
       display: none;
-    }
-    #qr {
-      height: 40px;
-      border: 1px solid white;
-      border-radius: 5px;
     }
   </style>
 </head>
@@ -95,8 +119,9 @@
 
 <header>
   <img src="logo.png" alt="Logo" onclick="volverInicio()" />
+  <h1 class="titulo">Ecolicitaciones & Finanzas</h1>
   <div class="whatsapp-contact">
-    <a href="https://wa.me/573057063238" target="_blank">WhatsApp Andrés</a>
+    <a href="https://wa.me/573057063238" target="_blank">WhatsApp Asesoría Ecolicitaciones & Finanzas</a>
     <img src="QR.png" id="qr" alt="QR WhatsApp">
   </div>
 </header>
@@ -151,7 +176,7 @@
   <div id="paso4" class="hidden">
     <h2>Consulta oportunidades en SECOP</h2>
     <label>Código UNSPSC</label>
-    <input type="text" id="codigo" />
+    <input type="text" id="codigo" placeholder="Ej: 80141600" />
     <label>Estado del contrato</label>
     <select id="estado">
       <option value="">Todos</option>
@@ -254,7 +279,7 @@
     }
 
     try {
-      const url = https://cors-anywhere.herokuapp.com/https://www.datos.gov.co/resource/jbjy-vk9h.json?$where=contains(codigo_de_categoria_principal,'${codigo}')&$order=fecha_de_publicacion DESC&$limit=10;
+      const url = `https://cors-anywhere.herokuapp.com/https://www.datos.gov.co/resource/jbjy-vk9h.json?$where=contains(codigo_de_categoria_principal,'${codigo}')&$order=fecha_de_publicacion DESC&$limit=10`;
       const res = await fetch(url);
       const data = await res.json();
       const filtrados = estado ? data.filter(d => d.estado_contrato === estado) : data;
@@ -264,18 +289,18 @@
         return;
       }
 
-      resultadosDiv.innerHTML = <h3>Resultados recientes para código: ${codigo}</h3>;
+      resultadosDiv.innerHTML = `<h3>Resultados recientes para código: ${codigo}</h3>`;
       filtrados.forEach(c => {
-        resultadosDiv.innerHTML += 
+        resultadosDiv.innerHTML += `
           <div class="contrato">
             <p><strong>Entidad:</strong> ${c.nombre_entidad || 'No disponible'}</p>
             <p><strong>Objeto del contrato:</strong> ${c.objeto_del_contrato || 'No disponible'}</p>
             <p><strong>Modalidad:</strong> ${c.modalidad_de_contratacion || 'No disponible'}</p>
             <p><strong>Valor:</strong> ${c.valor_del_contrato || 'No disponible'}</p>
             <p><strong>Estado:</strong> ${c.estado_contrato || 'No disponible'}</p>
-            ${c.urlproceso && c.urlproceso.url ? <a href="${c.urlproceso.url}" target="_blank">Ver proceso en SECOP</a> : ''}
+            ${c.urlproceso && c.urlproceso.url ? `<a href="${c.urlproceso.url}" target="_blank">Ver proceso en SECOP</a>` : ''}
           </div>
-        ;
+        `;
       });
 
     } catch (e) {
