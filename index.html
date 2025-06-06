@@ -23,18 +23,15 @@
       height: 60px;
       margin-right: 20px;
     }
-    h1 {
-      font-size: 1.8em;
-    }
     main {
-      max-width: 1000px;
+      max-width: 900px;
       margin: 2em auto;
-      padding: 1.5em;
+      padding: 2em;
       background: white;
       border-radius: 12px;
       box-shadow: 0 5px 20px rgba(0,0,0,0.1);
     }
-    h2 {
+    h2, h3 {
       color: #00796b;
     }
     label {
@@ -42,7 +39,7 @@
       margin-top: 1em;
       font-weight: bold;
     }
-    input, select {
+    input[type="text"], input[type="email"], input[type="tel"], select {
       width: 100%;
       padding: 10px;
       margin-top: 0.3em;
@@ -51,7 +48,7 @@
       border-radius: 8px;
     }
     button {
-      margin-top: 1em;
+      margin-top: 1.5em;
       background-color: #00796b;
       color: white;
       padding: 10px 20px;
@@ -70,20 +67,8 @@
       border-bottom: 1px solid #ccc;
       padding: 1em 0;
     }
-    .contacto {
-      text-align: center;
-      margin-top: 2em;
-    }
-    .descarga {
-      display: inline-block;
-      padding: 10px 15px;
-      background: #43a047;
-      color: white;
-      border-radius: 6px;
-      text-decoration: none;
-    }
-    .descarga:hover {
-      background: #2e7d32;
+    .oculto {
+      display: none;
     }
   </style>
 </head>
@@ -95,90 +80,119 @@
 </header>
 
 <main>
-  <h2>Consulta de oportunidades según tu código UNSPSC</h2>
-  <p>Introduce tu código UNSPSC para conocer las oportunidades disponibles en SECOP II. Ejemplo: <strong>80141600</strong></p>
-  
-  <label for="codigo">Código UNSPSC</label>
-  <input type="text" id="codigo" placeholder="Ej. 80141600" />
+  <div id="paso1">
+    <h2>Registro inicial</h2>
+    <label for="nombre">Nombre completo</label>
+    <input type="text" id="nombre" required />
 
-  <label for="estado">Filtrar por estado del contrato</label>
-  <select id="estado">
-    <option value="">-- Todos los estados --</option>
-    <option value="Activo">Activo</option>
-    <option value="Adjudicado">Adjudicado</option>
-    <option value="Borrador">Borrador</option>
-    <option value="Cancelado">Cancelado</option>
-    <option value="Terminado">Terminado</option>
-    <option value="Liquidado">Liquidado</option>
-  </select>
+    <label for="correo">Correo electrónico</label>
+    <input type="email" id="correo" required />
 
-  <button onclick="buscarContratos()">Buscar</button>
+    <label for="empresa">Empresa</label>
+    <input type="text" id="empresa" />
 
-  <div class="resultados" id="resultados"></div>
+    <label for="telefono">Número de teléfono</label>
+    <input type="tel" id="telefono" />
 
-  <div class="contacto">
-    <p>¿Quieres más información sobre un proceso? <br/>Contacta directamente a <strong>Andrés</strong>:</p>
-    <a href="https://wa.me/573057063238" target="_blank" class="descarga">Escribir a Andrés por WhatsApp</a>
+    <label>
+      <input type="checkbox" id="aceptaDatos" />
+      Acepto los términos de tratamiento de datos personales.
+    </label>
+
+    <button onclick="validarPaso1()">Continuar</button>
+  </div>
+
+  <div id="paso2" class="oculto">
+    <h2>Selecciona el tipo de proceso que deseas consultar</h2>
+    <label for="tipoProceso">Tipo de proceso</label>
+    <select id="tipoProceso">
+      <option value="">-- Selecciona --</option>
+      <option value="80141600">Consultoría administrativa</option>
+      <option value="85121603">Servicios de salud</option>
+      <option value="93141500">Servicios jurídicos</option>
+      <option value="72101500">Servicios de ingeniería</option>
+    </select>
+    <button onclick="mostrarBusqueda()">Consultar procesos</button>
+  </div>
+
+  <div id="paso3" class="oculto">
+    <h3>Consulta contratos en SECOP II</h3>
+    <label for="estado">Filtrar por estado</label>
+    <select id="estado">
+      <option value="">Todos</option>
+      <option value="Activo">Activo</option>
+      <option value="Borrador">Borrador</option>
+      <option value="Liquidado">Liquidado</option>
+    </select>
+
+    <button onclick="buscarContratos()">Buscar contratos</button>
+    <div class="resultados" id="resultados"></div>
   </div>
 </main>
 
 <script>
-  async function buscarContratos() {
-    const codigo = document.getElementById("codigo").value.trim();
-    const estadoFiltro = document.getElementById("estado").value.trim();
-    const resultadosDiv = document.getElementById("resultados");
-    resultadosDiv.innerHTML = "Buscando...";
+  function validarPaso1() {
+    const nombre = document.getElementById("nombre").value.trim();
+    const correo = document.getElementById("correo").value.trim();
+    const acepta = document.getElementById("aceptaDatos").checked;
 
-    if (!codigo) {
-      resultadosDiv.innerHTML = "Por favor, ingresa un código UNSPSC válido.";
+    if (!nombre || !correo || !acepta) {
+      alert("Por favor, completa todos los campos requeridos y acepta los términos.");
       return;
     }
 
+    document.getElementById("paso1").classList.add("oculto");
+    document.getElementById("paso2").classList.remove("oculto");
+  }
+
+  function mostrarBusqueda() {
+    const tipo = document.getElementById("tipoProceso").value;
+    if (!tipo) {
+      alert("Selecciona un tipo de proceso.");
+      return;
+    }
+    document.getElementById("paso2").classList.add("oculto");
+    document.getElementById("paso3").classList.remove("oculto");
+  }
+
+  async function buscarContratos() {
+    const codigo = document.getElementById("tipoProceso").value;
+    const estadoFiltro = document.getElementById("estado").value;
+    const resultadosDiv = document.getElementById("resultados");
+    resultadosDiv.innerHTML = "Buscando...";
+
     try {
-      const consultaCodigo = `V1.${codigo}`;
-      const url = `https://cors-anywhere.herokuapp.com/https://www.datos.gov.co/resource/jbjy-vk9h.json?$q=${consultaCodigo}`;
+      const url = `https://cors-anywhere.herokuapp.com/https://www.datos.gov.co/resource/jbjy-vk9h.json?$where=starts_with(codigo_de_categoria_principal,'V1.${codigo}')`;
       const response = await fetch(url);
       const data = await response.json();
 
-      const hoy = new Date();
-
-      const filtrados = data.filter(proceso => {
-        const cumpleEstado = !estadoFiltro || (proceso.estado_contrato && proceso.estado_contrato.toLowerCase() === estadoFiltro.toLowerCase());
-
-        const fechaCierre = proceso.fecha_cierre ? new Date(proceso.fecha_cierre) : null;
-        const estaVigente = fechaCierre ? fechaCierre >= hoy : true;
-
-        return cumpleEstado && estaVigente;
-      });
+      const filtrados = estadoFiltro
+        ? data.filter(p => p.estado_contrato === estadoFiltro)
+        : data;
 
       if (filtrados.length === 0) {
-        resultadosDiv.innerHTML = `<p>No se encontraron resultados para el código <strong>${codigo}</strong>${estadoFiltro ? " y estado <strong>" + estadoFiltro + "</strong>" : ""}.</p>`;
+        resultadosDiv.innerHTML = `<p>No se encontraron contratos con ese filtro.</p>`;
         return;
       }
 
-      resultadosDiv.innerHTML = `<h3>Resultados para código: ${codigo}</h3>`;
+      resultadosDiv.innerHTML = `<h3>Resultados encontrados</h3>`;
       filtrados.forEach(proceso => {
-        const fechaCierre = proceso.fecha_cierre ? new Date(proceso.fecha_cierre).toLocaleDateString() : 'No disponible';
         resultadosDiv.innerHTML += `
           <div class="contrato">
             <p><strong>Entidad:</strong> ${proceso.nombre_entidad || 'No disponible'}</p>
             <p><strong>Objeto del contrato:</strong> ${proceso.objeto_del_contrato || 'No disponible'}</p>
             <p><strong>Modalidad:</strong> ${proceso.modalidad_de_contratacion || 'No disponible'}</p>
-            <p><strong>Valor:</strong> ${proceso.valor_del_contrato || 'No disponible'}</p>
             <p><strong>Estado:</strong> ${proceso.estado_contrato || 'No disponible'}</p>
-            <p><strong>Fecha de cierre:</strong> ${fechaCierre}</p>
-            ${proceso.urlproceso && proceso.urlproceso.url 
+            <p><strong>Valor:</strong> ${proceso.valor_del_contrato || 'No disponible'}</p>
+            ${proceso.urlproceso && proceso.urlproceso.url
               ? `<a href="${proceso.urlproceso.url}" target="_blank">Ver proceso en SECOP</a>` 
               : ''}
           </div>
         `;
       });
-
     } catch (error) {
       console.error(error);
-      resultadosDiv.innerHTML = `❌ Ocurrió un error al consultar la información. <br> 
-        Asegúrate de haber habilitado el proxy desde 
-        <a href='https://cors-anywhere.herokuapp.com/corsdemo' target='_blank'>cors-anywhere.herokuapp.com/corsdemo</a>.`;
+      resultadosDiv.innerHTML = `❌ Error consultando datos. Asegúrate de habilitar el proxy desde <a href='https://cors-anywhere.herokuapp.com/corsdemo' target='_blank'>aquí</a>.`;
     }
   }
 </script>
