@@ -23,6 +23,12 @@
       height: 50px;
       cursor: pointer;
     }
+    h1 {
+      margin: 0;
+      font-size: 1.5em;
+      flex-grow: 1;
+      text-align: center;
+    }
     .whatsapp-contact {
       display: flex;
       align-items: center;
@@ -35,6 +41,24 @@
       border-radius: 5px;
       text-decoration: none;
       font-weight: bold;
+      font-size: 0.9em;
+    }
+    #qr {
+      height: 40px;
+      cursor: pointer;
+    }
+    #qrModal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+    }
+    #qrModal img {
+      max-height: 80vh;
+      border: 5px solid white;
+      border-radius: 8px;
     }
     .container {
       max-width: 800px;
@@ -46,6 +70,7 @@
     }
     h2 {
       color: #00796b;
+      text-align: center;
     }
     label {
       font-weight: bold;
@@ -60,8 +85,11 @@
       border: 1px solid #ccc;
     }
     .navigation {
-      margin-top: 1em;
+      margin-top: 1.5em;
       text-align: right;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
     }
     .navigation button {
       background: #00695c;
@@ -81,165 +109,57 @@
       border-bottom: 1px solid #ccc;
       padding: 1em 0;
     }
+    .contrato:last-child {
+      border: none;
+    }
     .hidden {
       display: none;
     }
-    #qr {
-      height: 40px;
-      border: 1px solid white;
-      border-radius: 5px;
+    a {
+      color: #00796b;
     }
   </style>
 </head>
 <body>
 
 <header>
-  <img src="logo.png" alt="Logo" onclick="volverInicio()" />
+  <img src="logo.png" alt="Logo" onclick="location.href='index.html'" />
+  <h1>Ecolicitaciones & Finanzas</h1>
   <div class="whatsapp-contact">
-    <a href="https://wa.me/573057063238" target="_blank">WhatsApp Andrés</a>
-    <img src="QR.png" id="qr" alt="QR WhatsApp">
+    <a href="https://wa.me/573057063238" target="_blank">WhatsApp Asesoría Ecolicitaciones & Finanzas</a>
+    <img src="QR.png" id="qr" alt="QR WhatsApp" onclick="mostrarQR()" />
   </div>
 </header>
 
+<div id="qrModal" onclick="this.style.display='none'">
+  <img src="QR.png" alt="QR Ampliado" />
+</div>
+
 <div class="container">
-  <!-- Paso 1 -->
-  <div id="paso1">
-    <h2>Registro</h2>
-    <label>Nombre</label>
-    <input type="text" id="nombre" required />
-    <label>Correo</label>
-    <input type="email" id="correo" required />
-    <label>Teléfono</label>
-    <input type="tel" id="telefono" pattern="[0-9]{7,11}" required maxlength="11" />
-    <label>Empresa</label>
-    <input type="text" id="empresa" required />
-    <label>
-      <input type="checkbox" id="terminos" required /> Acepto el tratamiento de datos personales
-    </label>
-    <div class="navigation">
-      <button onclick="validarPaso1()">Siguiente ➡️</button>
-    </div>
+  <h2>Consulta oportunidades en SECOP</h2>
+
+  <label for="codigo">Código UNSPSC</label>
+  <input type="text" id="codigo" placeholder="Ej: 80141600" />
+
+  <label for="estado">Estado del contrato</label>
+  <select id="estado">
+    <option value="">Todos</option>
+    <option value="Activo">Activo</option>
+    <option value="Liquidado">Liquidado</option>
+    <option value="Terminado">Terminado</option>
+  </select>
+
+  <div class="navigation">
+    <button onclick="history.back()">⬅️ Atrás</button>
+    <button onclick="buscarContratos()">Buscar</button>
   </div>
 
-  <!-- Paso 2 -->
-  <div id="paso2" class="hidden">
-    <h2>Selecciona el tipo de asesoría</h2>
-    <select id="tipoProceso" onchange="mostrarContrataciones()">
-      <option value="">Selecciona</option>
-      <option value="licitaciones">Licitaciones</option>
-      <option value="contable">Contabilidad</option>
-      <option value="ambiental">Consultoría Ambiental</option>
-    </select>
-    <div class="navigation">
-      <button onclick="cambiarPaso(1)">⬅️ Atrás</button>
-      <button onclick="validarPaso2()">Siguiente ➡️</button>
-    </div>
-  </div>
-
-  <!-- Paso 3 -->
-  <div id="paso3" class="hidden">
-    <h2>Tipo de contratación</h2>
-    <select id="subProceso" onchange="mostrarRequisitos()"></select>
-    <ul id="requisitos"></ul>
-    <div class="navigation">
-      <button onclick="cambiarPaso(2)">⬅️ Atrás</button>
-      <button onclick="cambiarPaso(4)">Siguiente ➡️</button>
-    </div>
-  </div>
-
-  <!-- Paso 4 -->
-  <div id="paso4" class="hidden">
-    <h2>Consulta oportunidades en SECOP</h2>
-    <label>Código UNSPSC</label>
-    <input type="text" id="codigo" />
-    <label>Estado del contrato</label>
-    <select id="estado">
-      <option value="">Todos</option>
-      <option value="Activo">Activo</option>
-      <option value="Liquidado">Liquidado</option>
-      <option value="Terminado">Terminado</option>
-    </select>
-    <div class="navigation">
-      <button onclick="cambiarPaso(3)">⬅️ Atrás</button>
-      <button onclick="buscarContratos()">Buscar</button>
-    </div>
-    <div class="resultados" id="resultados"></div>
-  </div>
+  <div class="resultados" id="resultados"></div>
 </div>
 
 <script>
-  function volverInicio() {
-    location.reload();
-  }
-
-  function cambiarPaso(paso) {
-    for (let i = 1; i <= 4; i++) {
-      document.getElementById('paso' + i).classList.add('hidden');
-    }
-    document.getElementById('paso' + paso).classList.remove('hidden');
-  }
-
-  function validarPaso1() {
-    const email = document.getElementById('correo');
-    const tel = document.getElementById('telefono');
-    const term = document.getElementById('terminos');
-    if (!email.checkValidity() || !tel.checkValidity() || !term.checked) {
-      alert("Por favor completa los campos correctamente.");
-      return;
-    }
-    cambiarPaso(2);
-  }
-
-  function validarPaso2() {
-    const tipo = document.getElementById('tipoProceso').value;
-    if (!tipo) {
-      alert("Selecciona un tipo de proceso.");
-      return;
-    }
-    cambiarPaso(3);
-  }
-
-  function mostrarContrataciones() {
-    const tipo = document.getElementById('tipoProceso').value;
-    const select = document.getElementById('subProceso');
-    const opciones = {
-      licitaciones: ["Subasta Inversa", "Concurso de Méritos", "Contratación Directa", "Selección Abreviada", "Acuerdo Marco de Precios"],
-      contable: ["Auditoría Financiera", "NIIF PYMES", "Planeación Tributaria"],
-      ambiental: ["Estudios de Impacto", "Planes de Manejo", "Economía Circular", "Evaluación Ambiental Estratégica", "Huella de Carbono"]
-    };
-    select.innerHTML = "<option value=''>Seleccione</option>";
-    (opciones[tipo] || []).forEach(p => {
-      const option = document.createElement("option");
-      option.value = p;
-      option.textContent = p;
-      select.appendChild(option);
-    });
-  }
-
-  function mostrarRequisitos() {
-    const tipo = document.getElementById("subProceso").value;
-    const lista = document.getElementById("requisitos");
-    const data = {
-      "Subasta Inversa": ["Certificado Cámara de Comercio", "RUP actualizado", "Estados financieros auditados (2 años)"],
-      "Concurso de Méritos": ["Certificación experiencia", "HV del equipo", "Propuesta técnica"],
-      "Contratación Directa": ["Certificado existencia", "RUT", "Propuesta firmada"],
-      "Selección Abreviada": ["Estudio de mercado", "RUP", "Soportes"],
-      "Acuerdo Marco de Precios": ["Registro Colombia Compra", "Análisis de precios"],
-      "Auditoría Financiera": ["Estados auditados", "Acta constitutiva"],
-      "NIIF PYMES": ["Estados financieros NIIF", "Políticas contables"],
-      "Planeación Tributaria": ["Declaraciones de renta", "Análisis de riesgo"],
-      "Estudios de Impacto": ["Diagnóstico ambiental", "Plan de manejo"],
-      "Planes de Manejo": ["Zonificación", "Estrategias ecológicas"],
-      "Economía Circular": ["ACV", "Materiales reciclables"],
-      "Evaluación Ambiental Estratégica": ["Análisis políticas", "Participación"],
-      "Huella de Carbono": ["Inventario GEI", "Plan de reducción"]
-    };
-    lista.innerHTML = "";
-    (data[tipo] || []).forEach(req => {
-      const li = document.createElement("li");
-      li.textContent = req;
-      lista.appendChild(li);
-    });
+  function mostrarQR() {
+    document.getElementById('qrModal').style.display = 'flex';
   }
 
   async function buscarContratos() {
@@ -284,5 +204,6 @@
     }
   }
 </script>
+
 </body>
 </html>
