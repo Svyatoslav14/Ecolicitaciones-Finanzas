@@ -4,217 +4,285 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Ecolicitaciones & Finanzas</title>
-  <link rel="icon" type="image/png" href="logo.png" />
+  <link rel="icon" href="logo.png" />
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f5f5f5;
       margin: 0;
-      color: #333;
+      background: #f5f5f5;
     }
     header {
       background-color: #00695c;
       color: white;
       display: flex;
       align-items: center;
-      padding: 1em;
-      cursor: pointer;
+      justify-content: space-between;
+      padding: 1em 2em;
     }
     header img {
-      height: 60px;
-      margin-right: 20px;
+      height: 50px;
+      cursor: pointer;
     }
-    h1 {
-      font-size: 1.8em;
+    .whatsapp-contact {
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
-    main {
-      max-width: 900px;
+    .whatsapp-contact a {
+      background: #25D366;
+      padding: 8px 12px;
+      color: white;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .container {
+      max-width: 800px;
       margin: 2em auto;
       background: white;
       padding: 2em;
       border-radius: 12px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    }
+    h2 {
+      color: #00796b;
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 1em;
     }
     input, select {
       width: 100%;
       padding: 10px;
-      margin-top: 0.3em;
-      font-size: 1em;
-      border: 1px solid #ccc;
+      margin-top: 5px;
       border-radius: 8px;
+      border: 1px solid #ccc;
     }
-    button {
+    .navigation {
       margin-top: 1em;
-      background-color: #00796b;
+      text-align: right;
+    }
+    .navigation button {
+      background: #00695c;
       color: white;
-      padding: 10px 20px;
+      padding: 10px 16px;
       border: none;
       border-radius: 6px;
-      font-size: 1em;
       cursor: pointer;
     }
-    button:hover {
-      background-color: #004d40;
+    .navigation button:hover {
+      background: #004d40;
     }
-    .seccion {
+    .resultados {
+      margin-top: 2em;
+    }
+    .contrato {
+      border-bottom: 1px solid #ccc;
+      padding: 1em 0;
+    }
+    .hidden {
       display: none;
     }
-    .visible {
-      display: block;
-    }
-    .navegacion {
-      margin-top: 2em;
-      display: flex;
-      justify-content: space-between;
-    }
-    .requisitos {
-      background: #e0f2f1;
-      padding: 1em;
-      margin-top: 1em;
-      border-radius: 8px;
+    #qr {
+      height: 40px;
+      border: 1px solid white;
+      border-radius: 5px;
     }
   </style>
 </head>
 <body>
 
-<header onclick="irMenuPrincipal()">
-  <img src="logo.png" alt="Logo Ecolicitaciones" />
-  <h1>Ecolicitaciones & Finanzas</h1>
+<header>
+  <img src="logo.png" alt="Logo" onclick="volverInicio()" />
+  <div class="whatsapp-contact">
+    <a href="https://wa.me/573057063238" target="_blank">WhatsApp Andrés</a>
+    <img src="QR.png" id="qr" alt="QR WhatsApp">
+  </div>
 </header>
 
-<main>
-  <!-- Paso 1: Datos del cliente -->
-  <section id="paso1" class="seccion visible">
-    <h2>Bienvenido</h2>
-    <p>Por favor, completa los siguientes datos:</p>
-    <label>Nombre completo:</label>
+<div class="container">
+  <!-- Paso 1 -->
+  <div id="paso1">
+    <h2>Registro</h2>
+    <label>Nombre</label>
     <input type="text" id="nombre" required />
-    
-    <label>Correo electrónico:</label>
+    <label>Correo</label>
     <input type="email" id="correo" required />
-
-    <label>Empresa:</label>
-    <input type="text" id="empresa" />
-
-    <label>Teléfono (máx 11 dígitos):</label>
-    <input type="text" id="telefono" maxlength="11" pattern="\d{10,11}" required />
-
-    <label><input type="checkbox" id="acepta" required /> Acepto el tratamiento de mis datos personales</label>
-    <button onclick="siguientePaso(2)">Continuar</button>
-  </section>
-
-  <!-- Paso 2: Tipo de solicitud -->
-  <section id="paso2" class="seccion">
-    <h2>Selecciona el tipo de proceso que deseas consultar:</h2>
-    <select id="tipoProceso" onchange="mostrarRequisitos()">
-      <option value="">Selecciona una opción</option>
-      <option value="compra">Proceso de compra pública</option>
-      <option value="servicios">Prestación de servicios</option>
-      <option value="obras">Contratación de obras</option>
-    </select>
-    <div id="requisitos" class="requisitos"></div>
-
-    <div class="navegacion">
-      <div></div>
-      <button onclick="siguientePaso(3)">Siguiente ➡️</button>
+    <label>Teléfono</label>
+    <input type="tel" id="telefono" pattern="[0-9]{7,11}" required maxlength="11" />
+    <label>Empresa</label>
+    <input type="text" id="empresa" required />
+    <label>
+      <input type="checkbox" id="terminos" required /> Acepto el tratamiento de datos personales
+    </label>
+    <div class="navigation">
+      <button onclick="validarPaso1()">Siguiente ➡️</button>
     </div>
-  </section>
+  </div>
 
-  <!-- Paso 3: Contacto y consulta SECOP -->
-  <section id="paso3" class="seccion">
-    <h2>Contacto</h2>
-    <p>¿Deseas ayuda con este proceso?</p>
-    <a href="https://wa.me/573057063238" target="_blank">
-      👉 Contactar a Andrés por WhatsApp
-    </a>
-
-    <h3 style="margin-top: 2em;">Consulta en SECOP por código UNSPSC</h3>
-    <label>Código UNSPSC:</label>
-    <input type="text" id="codigo" placeholder="Ej. 80141600" />
-    
-    <label>Estado del contrato:</label>
-    <select id="estado">
-      <option value="">Cualquiera</option>
-      <option value="Activo">Activo</option>
-      <option value="Celebrado">Celebrado</option>
-      <option value="Borrador">Borrador</option>
+  <!-- Paso 2 -->
+  <div id="paso2" class="hidden">
+    <h2>Selecciona el tipo de asesoría</h2>
+    <select id="tipoProceso" onchange="mostrarContrataciones()">
+      <option value="">Selecciona</option>
+      <option value="licitaciones">Licitaciones</option>
+      <option value="contable">Contabilidad</option>
+      <option value="ambiental">Consultoría Ambiental</option>
     </select>
-    <button onclick="buscarContratos()">Buscar</button>
+    <div class="navigation">
+      <button onclick="cambiarPaso(1)">⬅️ Atrás</button>
+      <button onclick="validarPaso2()">Siguiente ➡️</button>
+    </div>
+  </div>
 
-    <div id="resultados" style="margin-top: 2em;"></div>
-  </section>
-</main>
+  <!-- Paso 3 -->
+  <div id="paso3" class="hidden">
+    <h2>Tipo de contratación</h2>
+    <select id="subProceso" onchange="mostrarRequisitos()"></select>
+    <ul id="requisitos"></ul>
+    <div class="navigation">
+      <button onclick="cambiarPaso(2)">⬅️ Atrás</button>
+      <button onclick="cambiarPaso(4)">Siguiente ➡️</button>
+    </div>
+  </div>
+
+  <!-- Paso 4 -->
+  <div id="paso4" class="hidden">
+    <h2>Consulta oportunidades en SECOP</h2>
+    <label>Código UNSPSC</label>
+    <input type="text" id="codigo" />
+    <label>Estado del contrato</label>
+    <select id="estado">
+      <option value="">Todos</option>
+      <option value="Activo">Activo</option>
+      <option value="Liquidado">Liquidado</option>
+      <option value="Terminado">Terminado</option>
+    </select>
+    <div class="navigation">
+      <button onclick="cambiarPaso(3)">⬅️ Atrás</button>
+      <button onclick="buscarContratos()">Buscar</button>
+    </div>
+    <div class="resultados" id="resultados"></div>
+  </div>
+</div>
 
 <script>
-  function irMenuPrincipal() {
-    mostrarPaso(1);
+  function volverInicio() {
+    location.reload();
   }
 
-  function siguientePaso(n) {
-    if (n === 2 && (!document.getElementById("acepta").checked || !document.getElementById("correo").value.includes('@'))) {
-      alert("Por favor completa todos los datos correctamente.");
+  function cambiarPaso(paso) {
+    for (let i = 1; i <= 4; i++) {
+      document.getElementById('paso' + i).classList.add('hidden');
+    }
+    document.getElementById('paso' + paso).classList.remove('hidden');
+  }
+
+  function validarPaso1() {
+    const email = document.getElementById('correo');
+    const tel = document.getElementById('telefono');
+    const term = document.getElementById('terminos');
+    if (!email.checkValidity() || !tel.checkValidity() || !term.checked) {
+      alert("Por favor completa los campos correctamente.");
       return;
     }
-    mostrarPaso(n);
+    cambiarPaso(2);
   }
 
-  function mostrarPaso(n) {
-    document.querySelectorAll('.seccion').forEach(sec => sec.classList.remove('visible'));
-    document.getElementById(`paso${n}`).classList.add('visible');
+  function validarPaso2() {
+    const tipo = document.getElementById('tipoProceso').value;
+    if (!tipo) {
+      alert("Selecciona un tipo de proceso.");
+      return;
+    }
+    cambiarPaso(3);
+  }
+
+  function mostrarContrataciones() {
+    const tipo = document.getElementById('tipoProceso').value;
+    const select = document.getElementById('subProceso');
+    const opciones = {
+      licitaciones: ["Subasta Inversa", "Concurso de Méritos", "Contratación Directa", "Selección Abreviada", "Acuerdo Marco de Precios"],
+      contable: ["Auditoría Financiera", "NIIF PYMES", "Planeación Tributaria"],
+      ambiental: ["Estudios de Impacto", "Planes de Manejo", "Economía Circular", "Evaluación Ambiental Estratégica", "Huella de Carbono"]
+    };
+    select.innerHTML = "<option value=''>Seleccione</option>";
+    (opciones[tipo] || []).forEach(p => {
+      const option = document.createElement("option");
+      option.value = p;
+      option.textContent = p;
+      select.appendChild(option);
+    });
   }
 
   function mostrarRequisitos() {
-    const tipo = document.getElementById("tipoProceso").value;
-    const div = document.getElementById("requisitos");
-    let html = "";
-
-    if (tipo === "compra") {
-      html = "<ul><li>Certificado de existencia</li><li>Estados financieros</li><li>Rut actualizado</li></ul>";
-    } else if (tipo === "servicios") {
-      html = "<ul><li>Hoja de vida</li><li>Certificados de experiencia</li><li>Referencias laborales</li></ul>";
-    } else if (tipo === "obras") {
-      html = "<ul><li>Licencia de construcción</li><li>Certificado técnico</li><li>Experiencia específica</li></ul>";
-    }
-
-    div.innerHTML = "<h4>Documentos requeridos:</h4>" + html;
+    const tipo = document.getElementById("subProceso").value;
+    const lista = document.getElementById("requisitos");
+    const data = {
+      "Subasta Inversa": ["Certificado Cámara de Comercio", "RUP actualizado", "Estados financieros auditados (2 años)"],
+      "Concurso de Méritos": ["Certificación experiencia", "HV del equipo", "Propuesta técnica"],
+      "Contratación Directa": ["Certificado existencia", "RUT", "Propuesta firmada"],
+      "Selección Abreviada": ["Estudio de mercado", "RUP", "Soportes"],
+      "Acuerdo Marco de Precios": ["Registro Colombia Compra", "Análisis de precios"],
+      "Auditoría Financiera": ["Estados auditados", "Acta constitutiva"],
+      "NIIF PYMES": ["Estados financieros NIIF", "Políticas contables"],
+      "Planeación Tributaria": ["Declaraciones de renta", "Análisis de riesgo"],
+      "Estudios de Impacto": ["Diagnóstico ambiental", "Plan de manejo"],
+      "Planes de Manejo": ["Zonificación", "Estrategias ecológicas"],
+      "Economía Circular": ["ACV", "Materiales reciclables"],
+      "Evaluación Ambiental Estratégica": ["Análisis políticas", "Participación"],
+      "Huella de Carbono": ["Inventario GEI", "Plan de reducción"]
+    };
+    lista.innerHTML = "";
+    (data[tipo] || []).forEach(req => {
+      const li = document.createElement("li");
+      li.textContent = req;
+      lista.appendChild(li);
+    });
   }
 
   async function buscarContratos() {
     const codigo = document.getElementById("codigo").value.trim();
     const estado = document.getElementById("estado").value;
-    const div = document.getElementById("resultados");
-    div.innerHTML = "Buscando...";
+    const resultadosDiv = document.getElementById("resultados");
+    resultadosDiv.innerHTML = "Buscando...";
 
-    let query = `https://cors-anywhere.herokuapp.com/https://www.datos.gov.co/resource/jbjy-vk9h.json?codigo_de_categoria_principal=V1.${codigo}`;
-    if (estado) {
-      query += `&estado_contrato=${estado}`;
+    if (!codigo) {
+      resultadosDiv.innerHTML = "Por favor ingresa un código UNSPSC.";
+      return;
     }
 
     try {
-      const res = await fetch(query);
+      const url = `https://cors-anywhere.herokuapp.com/https://www.datos.gov.co/resource/jbjy-vk9h.json?$where=contains(codigo_de_categoria_principal,'${codigo}')&$order=fecha_de_publicacion DESC&$limit=10`;
+      const res = await fetch(url);
       const data = await res.json();
+      const filtrados = estado ? data.filter(d => d.estado_contrato === estado) : data;
 
-      if (!data || data.length === 0) {
-        div.innerHTML = `<p>No se encontraron resultados para <strong>${codigo}</strong>.</p>`;
+      if (filtrados.length === 0) {
+        resultadosDiv.innerHTML = "No se encontraron resultados.";
         return;
       }
 
-      div.innerHTML = `<h3>Resultados:</h3>`;
-      data.forEach(p => {
-        div.innerHTML += `
-          <div style="border-bottom:1px solid #ccc; padding:1em 0;">
-            <p><strong>Entidad:</strong> ${p.nombre_entidad || 'N/D'}</p>
-            <p><strong>Objeto:</strong> ${p.objeto_del_contrato || 'N/D'}</p>
-            <p><strong>Valor:</strong> ${p.valor_del_contrato || 'N/D'}</p>
-            <p><strong>Estado:</strong> ${p.estado_contrato || 'N/D'}</p>
-            ${p.urlproceso?.url ? `<a href="${p.urlproceso.url}" target="_blank">Ver proceso en SECOP</a>` : ''}
-          </div>`;
+      resultadosDiv.innerHTML = `<h3>Resultados recientes para código: ${codigo}</h3>`;
+      filtrados.forEach(c => {
+        resultadosDiv.innerHTML += `
+          <div class="contrato">
+            <p><strong>Entidad:</strong> ${c.nombre_entidad || 'No disponible'}</p>
+            <p><strong>Objeto del contrato:</strong> ${c.objeto_del_contrato || 'No disponible'}</p>
+            <p><strong>Modalidad:</strong> ${c.modalidad_de_contratacion || 'No disponible'}</p>
+            <p><strong>Valor:</strong> ${c.valor_del_contrato || 'No disponible'}</p>
+            <p><strong>Estado:</strong> ${c.estado_contrato || 'No disponible'}</p>
+            ${c.urlproceso && c.urlproceso.url ? `<a href="${c.urlproceso.url}" target="_blank">Ver proceso en SECOP</a>` : ''}
+          </div>
+        `;
       });
+
     } catch (e) {
-      div.innerHTML = `❌ Error al consultar. Ve a <a href="https://cors-anywhere.herokuapp.com/corsdemo" target="_blank">corsdemo</a> y habilita permisos.`;
+      resultadosDiv.innerHTML = "Error al consultar la información.";
+      console.error(e);
     }
   }
 </script>
-
 </body>
 </html>
