@@ -4,64 +4,81 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Ecolicitaciones & Finanzas</title>
-  <link rel="icon" type="image/png" href="logo.png" />
+  <link rel="icon" href="logo.png" />
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f9f9f9;
       margin: 0;
-      color: #333;
+      background: #f5f5f5;
     }
     header {
       background-color: #00695c;
       color: white;
       display: flex;
       align-items: center;
-      padding: 1em;
+      justify-content: space-between;
+      padding: 1em 2em;
     }
     header img {
-      height: 60px;
-      margin-right: 20px;
+      height: 50px;
+      cursor: pointer;
     }
-    h1 {
-      font-size: 1.8em;
+    .whatsapp-contact {
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
-    main {
-      max-width: 1000px;
+    .whatsapp-contact a {
+      background: #25D366;
+      padding: 8px 12px;
+      color: white;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    #qr {
+      height: 40px;
+      border: 1px solid white;
+      border-radius: 5px;
+    }
+    .container {
+      max-width: 800px;
       margin: 2em auto;
-      padding: 1.5em;
       background: white;
+      padding: 2em;
       border-radius: 12px;
       box-shadow: 0 5px 20px rgba(0,0,0,0.1);
     }
     h2 {
       color: #00796b;
+      text-align: center;
     }
     label {
+      font-weight: bold;
       display: block;
       margin-top: 1em;
-      font-weight: bold;
     }
     input, select {
       width: 100%;
       padding: 10px;
-      margin-top: 0.3em;
-      font-size: 1em;
-      border: 1px solid #ccc;
+      margin-top: 5px;
       border-radius: 8px;
+      border: 1px solid #ccc;
     }
-    button {
+    .navigation {
       margin-top: 1em;
-      background-color: #00796b;
+      text-align: right;
+    }
+    .navigation button {
+      background: #00695c;
       color: white;
-      padding: 10px 20px;
+      padding: 10px 16px;
       border: none;
       border-radius: 6px;
-      font-size: 1em;
       cursor: pointer;
     }
-    button:hover {
-      background-color: #004d40;
+    .navigation button:hover {
+      background: #004d40;
     }
     .resultados {
       margin-top: 2em;
@@ -70,115 +87,81 @@
       border-bottom: 1px solid #ccc;
       padding: 1em 0;
     }
-    .contacto {
-      text-align: center;
-      margin-top: 2em;
-    }
-    .descarga {
-      display: inline-block;
-      padding: 10px 15px;
-      background: #43a047;
-      color: white;
-      border-radius: 6px;
-      text-decoration: none;
-    }
-    .descarga:hover {
-      background: #2e7d32;
-    }
   </style>
 </head>
 <body>
 
 <header>
-  <img src="logo.png" alt="Logo Ecolicitaciones" />
-  <h1>Ecolicitaciones & Finanzas</h1>
+  <img src="logo.png" alt="Logo" onclick="location.reload()" />
+  <div class="whatsapp-contact">
+    <a href="https://wa.me/573057063238" target="_blank">WhatsApp Asesoría Ecolicitaciones & Finanzas</a>
+    <img src="QR.png" id="qr" alt="QR WhatsApp">
+  </div>
 </header>
 
-<main>
-  <h2>Consulta de oportunidades según tu código UNSPSC</h2>
-  <p>Introduce tu código UNSPSC para conocer las oportunidades disponibles en SECOP II. Ejemplo: <strong>80141600</strong></p>
-  
-  <label for="codigo">Código UNSPSC</label>
-  <input type="text" id="codigo" placeholder="Ej. 80141600" />
+<div class="container">
+  <h2>Consulta oportunidades en SECOP</h2>
 
-  <label for="estado">Filtrar por estado del contrato</label>
+  <label for="codigo">Código UNSPSC</label>
+  <input type="text" id="codigo" placeholder="Ej: 80141600" />
+
+  <label for="estado">Estado del contrato</label>
   <select id="estado">
-    <option value="">-- Todos los estados --</option>
+    <option value="">Todos</option>
     <option value="Activo">Activo</option>
-    <option value="Adjudicado">Adjudicado</option>
-    <option value="Borrador">Borrador</option>
-    <option value="Cancelado">Cancelado</option>
-    <option value="Terminado">Terminado</option>
     <option value="Liquidado">Liquidado</option>
+    <option value="Terminado">Terminado</option>
   </select>
 
-  <button onclick="buscarContratos()">Buscar</button>
+  <div class="navigation">
+    <button onclick="buscarContratos()">Buscar</button>
+  </div>
 
   <div class="resultados" id="resultados"></div>
-
-  <div class="contacto">
-    <p>¿Quieres más información sobre un proceso? <br/>Contacta directamente a <strong>Andrés</strong>:</p>
-    <a href="https://wa.me/573057063238" target="_blank" class="descarga">Escribir a Andrés por WhatsApp</a>
-  </div>
-</main>
+</div>
 
 <script>
   async function buscarContratos() {
     const codigo = document.getElementById("codigo").value.trim();
-    const estadoFiltro = document.getElementById("estado").value.trim();
+    const estado = document.getElementById("estado").value;
     const resultadosDiv = document.getElementById("resultados");
     resultadosDiv.innerHTML = "Buscando...";
 
     if (!codigo) {
-      resultadosDiv.innerHTML = "Por favor, ingresa un código UNSPSC válido.";
+      resultadosDiv.innerHTML = "Por favor ingresa un código UNSPSC.";
       return;
     }
 
     try {
-      const consultaCodigo = `V1.${codigo}`;
-      const url = `https://cors-anywhere.herokuapp.com/https://www.datos.gov.co/resource/jbjy-vk9h.json?$q=${consultaCodigo}`;
-      const response = await fetch(url);
+      const api = `https://www.datos.gov.co/resource/jbjy-vk9h.json?$where=contains(codigo_de_categoria_principal,'V1.${codigo}')&$limit=100`;
+      const proxy = `https://corsproxy.io/?${encodeURIComponent(api)}`;
+      const response = await fetch(proxy);
       const data = await response.json();
 
-      const hoy = new Date();
+      const filtrados = estado ? data.filter(d => d.estado_contrato === estado) : data;
 
-      const filtrados = data.filter(proceso => {
-        const cumpleEstado = !estadoFiltro || (proceso.estado_contrato && proceso.estado_contrato.toLowerCase() === estadoFiltro.toLowerCase());
-
-        const fechaCierre = proceso.fecha_cierre ? new Date(proceso.fecha_cierre) : null;
-        const estaVigente = fechaCierre ? fechaCierre >= hoy : true;
-
-        return cumpleEstado && estaVigente;
-      });
-
-      if (filtrados.length === 0) {
-        resultadosDiv.innerHTML = `<p>No se encontraron resultados para el código <strong>${codigo}</strong>${estadoFiltro ? " y estado <strong>" + estadoFiltro + "</strong>" : ""}.</p>`;
+      if (!filtrados.length) {
+        resultadosDiv.innerHTML = "No se encontraron resultados.";
         return;
       }
 
       resultadosDiv.innerHTML = `<h3>Resultados para código: ${codigo}</h3>`;
-      filtrados.forEach(proceso => {
-        const fechaCierre = proceso.fecha_cierre ? new Date(proceso.fecha_cierre).toLocaleDateString() : 'No disponible';
+      filtrados.forEach(c => {
         resultadosDiv.innerHTML += `
           <div class="contrato">
-            <p><strong>Entidad:</strong> ${proceso.nombre_entidad || 'No disponible'}</p>
-            <p><strong>Objeto del contrato:</strong> ${proceso.objeto_del_contrato || 'No disponible'}</p>
-            <p><strong>Modalidad:</strong> ${proceso.modalidad_de_contratacion || 'No disponible'}</p>
-            <p><strong>Valor:</strong> ${proceso.valor_del_contrato || 'No disponible'}</p>
-            <p><strong>Estado:</strong> ${proceso.estado_contrato || 'No disponible'}</p>
-            <p><strong>Fecha de cierre:</strong> ${fechaCierre}</p>
-            ${proceso.urlproceso && proceso.urlproceso.url 
-              ? `<a href="${proceso.urlproceso.url}" target="_blank">Ver proceso en SECOP</a>` 
-              : ''}
+            <p><strong>Entidad:</strong> ${c.nombre_entidad || 'No disponible'}</p>
+            <p><strong>Objeto del contrato:</strong> ${c.objeto_del_contrato || 'No disponible'}</p>
+            <p><strong>Modalidad:</strong> ${c.modalidad_de_contratacion || 'No disponible'}</p>
+            <p><strong>Valor:</strong> ${c.valor_del_contrato || 'No disponible'}</p>
+            <p><strong>Estado:</strong> ${c.estado_contrato || 'No disponible'}</p>
+            ${c.urlproceso && c.urlproceso.url ? `<a href="${c.urlproceso.url}" target="_blank">Ver proceso en SECOP</a>` : ''}
           </div>
         `;
       });
 
     } catch (error) {
-      console.error(error);
-      resultadosDiv.innerHTML = `❌ Ocurrió un error al consultar la información. <br> 
-        Asegúrate de haber habilitado el proxy desde 
-        <a href='https://cors-anywhere.herokuapp.com/corsdemo' target='_blank'>cors-anywhere.herokuapp.com/corsdemo</a>.`;
+      resultadosDiv.innerHTML = "❌ Error al consultar la información.";
+      console.error("Error:", error);
     }
   }
 </script>
